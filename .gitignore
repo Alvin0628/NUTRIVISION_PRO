@@ -1,0 +1,18 @@
+# Virtual environment
+venv/
+.venv/
+
+# Dataset
+datasets/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
