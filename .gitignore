@@ -6,7 +6,8 @@ models/production/
 models/candidates/
 
 runs/
-experiments/
+notebooks/archive/
+notebooks/experiments/
 
 results/final_evaluation/qualitative/
 
