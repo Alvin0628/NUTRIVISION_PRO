@@ -1,18 +1,18 @@
-# Virtual environment
-venv/
-.venv/
-
-# Dataset
 datasets/
 
-# Python cache
+*.pt
+*.pth
+models/production/
+models/candidates/
+
+runs/
+experiments/
+
+results/final_evaluation/qualitative/
+
+venv/
 __pycache__/
-*.py[cod]
+*.pyc
+.ipynb_checkpoints/
 
-# Environment variables
-.env
-.env.*
-
-# IDE
-.vscode/
-.idea/
+*.cache
