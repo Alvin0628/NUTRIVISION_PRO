@@ -1,0 +1,15 @@
+class_name,gt_images,detected_images,presence_coverage,miss_rate
+sambal,8,2,25.0,75.0
+tofu,7,2,28.57,71.43
+tempeh,7,3,42.86,57.14
+chicken,15,7,46.67,53.33
+squid,4,2,50.0,50.0
+fish,5,3,60.0,40.0
+fruit,3,2,66.67,33.33
+shrimp,4,3,75.0,25.0
+beef,9,7,77.78,22.22
+egg,19,15,78.95,21.05
+vegetable,40,33,82.5,17.5
+noodles,10,9,90.0,10.0
+rice,44,42,95.45,4.55
+pork,4,4,100.0,0.0

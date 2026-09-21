@@ -1,0 +1,15 @@
+class_name,times_in_gt,times_missed,miss_rate_pct,times_detected
+sambal,8,6,75.0,2
+tofu,7,5,71.43,2
+tempeh,7,4,57.14,3
+chicken,15,8,53.33,7
+squid,4,2,50.0,2
+fish,5,2,40.0,3
+fruit,3,1,33.33,2
+shrimp,4,1,25.0,3
+beef,9,2,22.22,7
+egg,19,4,21.05,15
+vegetable,40,7,17.5,33
+noodles,10,1,10.0,9
+rice,44,2,4.55,42
+pork,4,0,0.0,4

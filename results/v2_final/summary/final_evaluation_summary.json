@@ -1,0 +1,80 @@
+{
+  "model": "yolov11l-seg",
+  "model_path": "D:\\PREP_INTERN\\nutrivision_pro\\models\\production\\yolov11l_seg_v2_final.pt",
+  "conf_mode": "global",
+  "global_conf": 0.25,
+  "evaluated_on": "test set (held-out)",
+  "n_test_images": 63,
+  "overall": {
+    "split": "test",
+    "model": "yolov11l-seg",
+    "conf_mode": "global",
+    "global_conf": 0.25,
+    "mask_precision": 0.5077,
+    "mask_recall": 0.339,
+    "mask_mAP50": 0.3461,
+    "mask_mAP50-95": 0.2628,
+    "box_precision": 0.5667,
+    "box_recall": 0.3635,
+    "box_mAP50": 0.382,
+    "box_mAP50-95": 0.3032
+  },
+  "coverage": {
+    "split": "test",
+    "model": "yolov11l-seg",
+    "conf_mode": "global",
+    "mean_coverage": 75.98,
+    "median_coverage": 75.0,
+    "min_coverage": 0.0,
+    "max_coverage": 100.0,
+    "std_coverage": 24.79,
+    "pct_100": 44.44,
+    "pct_ge_90": 44.44,
+    "pct_ge_80": 44.44,
+    "pct_60_79": 30.16,
+    "pct_lt_60": 25.4
+  },
+  "instance": {
+    "gt_instances": 751,
+    "pred_instances": 404,
+    "tp": 245,
+    "fp": 159,
+    "fn": 506,
+    "instance_precision": 0.6064,
+    "instance_recall": 0.3262
+  },
+  "fp_per_image": 0.857,
+  "go_nogo": {
+    "all_pass": false,
+    "checks": {
+      "mean_coverage \u2265 85%": {
+        "pass": "False",
+        "value": "76.0%"
+      },
+      "pct_ge_90 \u2265 60%": {
+        "pass": "False",
+        "value": "44.4%"
+      },
+      "pct_lt_60 \u2264 10%": {
+        "pass": "False",
+        "value": "25.4%"
+      },
+      "mask_recall \u2265 0.40": {
+        "pass": false,
+        "value": "0.3390"
+      },
+      "mask_mAP50-95 \u2265 0.25": {
+        "pass": true,
+        "value": "0.2628"
+      },
+      "worst class pres \u2265 50%": {
+        "pass": "False",
+        "value": "sambal: 25.0%"
+      },
+      "FP/image \u2264 5": {
+        "pass": "True",
+        "value": "0.857"
+      }
+    }
+  }
+}

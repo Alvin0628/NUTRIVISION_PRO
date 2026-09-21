@@ -1,0 +1,51 @@
+{
+  "stage": "stage3_optuna",
+  "dataset": "nutrivision-pro-yolo-cleanv1",
+  "source_data_yaml": "/kaggle/input/datasets/alvin0628/nutrivision-pro-yolo-v7-cleanv1/clean_v1/data.yaml",
+  "runtime_data_yaml": "/kaggle/working/optuna_stage3/runtime_data.yaml",
+  "stage2_checkpoint": "/kaggle/input/datasets/alvin0628/nutrivision-pro-stage2-yolov11l-seg/stage2/artifacts/best.pt",
+  "final_best_checkpoint": "/kaggle/working/optuna_stage3/final/yolo11l_seg_stage3_optuna_final/weights/best.pt",
+  "final_last_checkpoint": "/kaggle/working/optuna_stage3/final/yolo11l_seg_stage3_optuna_final/weights/last.pt",
+  "search_trials": 8,
+  "search_epochs": 20,
+  "final_epochs": 50,
+  "best_trial": 5,
+  "best_search_mask_mAP50_95": 0.3165799626300598,
+  "best_params": {
+    "lr0": 0.002299958642814372,
+    "lrf": 0.01303561122512888,
+    "weight_decay": 2.824635708390488e-05,
+    "warmup_epochs": 1.1809091556421523,
+    "hsv_s": 0.46266516538163216,
+    "hsv_v": 0.3554709158757928,
+    "degrees": 2.713490317738959,
+    "scale": 0.6143687545759646,
+    "mosaic": 0.6783766633467947,
+    "mixup": 0.05618690193747616,
+    "copy_paste": 0.2170784332632994
+  },
+  "evaluation": [
+    {
+      "split": "val",
+      "box_precision": 0.4916746192719774,
+      "box_recall": 0.4086415415365581,
+      "box_mAP50": 0.4413520015761917,
+      "box_mAP50_95": 0.34266530578268445,
+      "mask_precision": 0.4677113409851537,
+      "mask_recall": 0.40351887223795385,
+      "mask_mAP50": 0.4205203380713152,
+      "mask_mAP50_95": 0.30503797434670615
+    },
+    {
+      "split": "test",
+      "box_precision": 0.4220471420742102,
+      "box_recall": 0.31686752870639,
+      "box_mAP50": 0.3399246521700012,
+      "box_mAP50_95": 0.2569158002875644,
+      "mask_precision": 0.3218217894836499,
+      "mask_recall": 0.3599157210630691,
+      "mask_mAP50": 0.31069814427640896,
+      "mask_mAP50_95": 0.2243802740707021
+    }
+  ]
+}
