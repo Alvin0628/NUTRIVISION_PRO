@@ -99,6 +99,9 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) 
             detail="Failed to contact the Firebase authentication service.",
         )
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 @app.on_event("startup")
 async def startup_event():
