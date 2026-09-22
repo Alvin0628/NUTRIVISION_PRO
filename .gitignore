@@ -16,3 +16,12 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
+
+# Eksperimen, Notebook & Runs
+experiments/
+notebooks/
+runs/
+results/
+
+# Hanya simpan models/production di Git
+models/candidates/
