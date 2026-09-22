@@ -1,0 +1,35 @@
+# Dataset — terlalu besar, tidak dibutuhkan di image
+datasets/
+
+# Notebook dan eksperimen
+notebooks/
+experiments/
+runs/
+
+# Git
+.git/
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.ipynb_checkpoints/
+
+# Environment
+.env
+venv/
+.venv/
+
+# Models lama / candidate (hanya production yang dipakai)
+models/candidates/
+
+# Hasil evaluasi
+results/
+audit/
+
+# File besar lainnya
+*.zip
+*.tar.gz
