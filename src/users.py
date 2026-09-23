@@ -24,6 +24,8 @@ bulking     = 2.0g/kg → supports hypertrophy
 
 Fat: 25% of total calories (minimum for hormonal function)
 Carbs: remaining calories after protein and fat requirements are met
+
+Micronutrients: Permenkes RI No. 28 Tahun 2019 tentang Angka Kecukupan Gizi (AKG Dewasa)
 """
 
 from enum import Enum
@@ -36,18 +38,16 @@ class Gender(str, Enum):
     FEMALE = "female"
 
 class ActivityLevel(str, Enum):
-    SEDENTARY  = "sedentary"   
-    LIGHT      = "light"       
-    MODERATE   = "moderate"    
-    ACTIVE     = "active"      
+    SEDENTARY   = "sedentary"   
+    LIGHT       = "light"       
+    MODERATE    = "moderate"    
+    ACTIVE      = "active"      
     VERY_ACTIVE = "very_active"
-
 
 class Goal(str, Enum):
     CUTTING     = "cutting"     
     MAINTENANCE = "maintenance" 
-    BULKING     = "bulking"    
-
+    BULKING     = "bulking"     
 
 _ACTIVITY_MULTIPLIER = {
     ActivityLevel.SEDENTARY:   1.2,
@@ -71,8 +71,40 @@ _PROTEIN_G_PER_KG = {
 
 FAT_PERCENTAGE = 0.25  
 
+# Referensi: Permenkes RI No. 28 Tahun 2019 tentang Angka Kecukupan Gizi (AKG)
+_AKG_MICRONUTRIENTS = {
+    Gender.MALE: {
+        "fiber_g": 37.0,
+        "omega_3_g": 1.6,
+        "magnesium_mg": 360.0,
+        "zinc_mg": 11.0,
+        "iron_mg": 9.0,
+        "calcium_mg": 1000.0,
+        "vitamin_c_mg": 90.0,
+        "vitamin_b_complex_mg": 1.3,
+        "vitamin_d_mcg": 15.0,
+        "vitamin_b12_mcg": 4.0,
+        "vitamin_a_mcg": 650.0,
+        "folic_acid_mcg": 400.0,
+    },
+    Gender.FEMALE: {
+        "fiber_g": 32.0,
+        "omega_3_g": 1.1,
+        "magnesium_mg": 330.0,
+        "zinc_mg": 8.0,
+        "iron_mg": 18.0,
+        "calcium_mg": 1000.0,
+        "vitamin_c_mg": 75.0,
+        "vitamin_b_complex_mg": 1.1,
+        "vitamin_d_mcg": 15.0,
+        "vitamin_b12_mcg": 4.0,
+        "vitamin_a_mcg": 600.0,
+        "folic_acid_mcg": 400.0,
+    },
+}
+
 class UserProfile(BaseModel):
-    uid:      str
+    uid:            str
     gender:         Gender
     age:            int         = Field(ge=10, le=100, description="Age in year")
     height_cm:      float       = Field(gt=0,  description="Height in cm")
@@ -81,14 +113,27 @@ class UserProfile(BaseModel):
     goal:           Goal
 
 class DailyTarget(BaseModel):
-    bmr:              float   
-    tdee:             float  
-    target_calories:  float 
-    target_protein_g: float
-    target_fat_g:     float
-    target_carbs_g:   float
-    goal:             str
-    activity_level:   str
+    calories: float
+    protein_g: float
+    carbs_g: float
+    fat_g: float
+    fiber_g: float
+    omega_3_g: float
+    magnesium_mg: float
+    zinc_mg: float
+    iron_mg: float
+    calcium_mg: float
+    vitamin_c_mg: float
+    vitamin_b_complex_mg: float
+    vitamin_d_mcg: float
+    vitamin_b12_mcg: float
+    vitamin_a_mcg: float
+    folic_acid_mcg: float
+    # metadata tambahan
+    bmr: float
+    tdee: float
+    goal: str
+    activity_level: str
 
 def calculate_bmr(profile: UserProfile) -> float:
     """
@@ -101,23 +146,24 @@ def calculate_bmr(profile: UserProfile) -> float:
     return base + 5 if profile.gender == Gender.MALE else base - 161
 
 def calculate_daily_target(profile: UserProfile) -> DailyTarget:
-    bmr             = calculate_bmr(profile)
-    tdee            = bmr * _ACTIVITY_MULTIPLIER[profile.activity_level]
+    bmr = calculate_bmr(profile)
+    tdee = bmr * _ACTIVITY_MULTIPLIER[profile.activity_level]
     target_calories = tdee + _GOAL_CALORIE_ADJUSTMENT[profile.goal]
 
     protein_g = _PROTEIN_G_PER_KG[profile.goal] * profile.weight_kg
-
-    fat_g = (target_calories * FAT_PERCENTAGE) / 9 
-
+    fat_g = (target_calories * FAT_PERCENTAGE) / 9
     carbs_g = max(target_calories - protein_g * 4 - fat_g * 9, 0) / 4
 
+    micronutrients = _AKG_MICRONUTRIENTS[profile.gender]
+
     return DailyTarget(
+        calories=round(target_calories, 1),
+        protein_g=round(protein_g, 1),
+        fat_g=round(fat_g, 1),
+        carbs_g=round(carbs_g, 1),
+        **{k: round(v, 2) for k, v in micronutrients.items()},
         bmr=round(bmr, 1),
         tdee=round(tdee, 1),
-        target_calories=round(target_calories, 1),
-        target_protein_g=round(protein_g, 1),
-        target_fat_g=round(fat_g, 1),
-        target_carbs_g=round(carbs_g, 1),
         goal=profile.goal.value,
         activity_level=profile.activity_level.value,
     )
