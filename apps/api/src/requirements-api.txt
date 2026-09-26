@@ -1,0 +1,38 @@
+# NutriVision Pro API — dependencies for Docker / EC2 CPU
+
+# API framework
+fastapi
+uvicorn[standard]
+
+# Image processing
+pillow
+
+# AWS S3 (feedback storage)
+boto3
+
+# Form data (file upload)
+python-multipart
+
+# Environment variables
+python-dotenv
+
+# Model inference (CPU Optimized via ONNX)
+onnxruntime
+
+# torch WAJIB tetap ada (dependency internal ultralytics untuk NMS/post-processing),
+# tapi pin ke build CPU-only supaya tidak ikut narik ~2GB library CUDA yang tidak dipakai
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+
+# Ultralytics YOLOv11
+ultralytics
+
+# Numerical ops (for inference.py shoelace polygon area)
+numpy
+
+requests
+
+redis
+
+google-genai>=0.1.0
+httpx>=0.27.0
