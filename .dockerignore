@@ -18,10 +18,10 @@ __pycache__/
 .Python
 *.ipynb_checkpoints/
 
-# Environment
-.env
-venv/
-.venv/
+# Environment — pola ** supaya kena apps/api/.env juga, bukan cuma root
+**/.env
+**/venv/
+**/.venv/
 
 # Models lama / candidate (hanya production yang dipakai)
 models/candidates/
@@ -29,6 +29,10 @@ models/candidates/
 # Hasil evaluasi
 results/
 audit/
+
+# Next.js app — tidak dibutuhkan saat build image API, dan node_modules bisa besar
+apps/web/
+node_modules/
 
 # File besar lainnya
 *.zip

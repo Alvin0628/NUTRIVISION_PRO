@@ -25,3 +25,5 @@ results/
 
 # Hanya simpan models/production di Git
 models/candidates/
+models/production
+*.zip
