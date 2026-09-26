@@ -1,0 +1,32 @@
+# Jalankan dari root repo:  docker compose -f infra/docker-compose.yaml up --build
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: .. # root repo, supaya models/ ikut terjangkau
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../apps/api/.env
+    environment:
+      - REDIS_HOST=redis
+      - APP_ENV=development
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  # web:                             # aktifkan kalau mau jalankan Next.js dev server juga lewat compose
+  #   build:
+  #     context: ../apps/web
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NEXT_PUBLIC_API_URL=http://localhost:8000
+  #   depends_on:
+  #     - api
