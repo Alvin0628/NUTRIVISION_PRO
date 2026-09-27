@@ -27,3 +27,6 @@ results/
 models/candidates/
 models/production
 *.zip
+
+# AWS EC2 Key Pair
+nutrivision-key.pem
