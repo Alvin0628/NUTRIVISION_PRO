@@ -27,6 +27,11 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Download model from S3
+        run: |
+          mkdir -p models/production
+          aws s3 cp s3://nutrivision-feedback-alvin-2026/models/production/yolov11l_seg_v2_final.onnx models/production/yolov11l_seg_v2_final.onnx
+
       - name: Login to ECR
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
