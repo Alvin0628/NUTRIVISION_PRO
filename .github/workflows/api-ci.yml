@@ -2,7 +2,7 @@ name: API CI/CD
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
     paths:
       - "apps/api/**"
       - "infra/docker-compose.yaml"
