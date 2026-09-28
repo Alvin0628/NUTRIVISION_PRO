@@ -114,7 +114,7 @@ def _decimal_to_float(obj):
 def save_image(image_id: str, image_bytes: bytes) -> str:
     path = _IMAGES_DIR / f"{image_id}.jpg"
     path.write_bytes(image_bytes)
-    _s3_upload(f"feedback/images/{image_id}.jpg", image_bytes, "image/jpeg")
+    _s3_upload(f"raw_user_images/{image_id}.jpg", image_bytes, "image/jpeg")
     return str(path)
 
 
@@ -122,7 +122,7 @@ def save_annotation(ann_id: str, annotation: dict) -> str:
     path    = _ANNOTATIONS_DIR / f"{ann_id}.json"
     payload = json.dumps(annotation, ensure_ascii=False, indent=2).encode()
     path.write_bytes(payload)
-    _s3_upload(f"feedback/annotations/{ann_id}.json", payload, "application/json")
+    _s3_upload(f"datasets/user_uploaded/{ann_id}.json", payload, "application/json") 
     return str(path)
 
 

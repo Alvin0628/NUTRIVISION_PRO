@@ -25,7 +25,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code dan model
 COPY apps/api/src/ ./src/
-COPY models/production/ ./models/production/
 
 # Working dir = src/ supaya import relatif (inference, nutrition, dll) berjalan
 WORKDIR /app/src

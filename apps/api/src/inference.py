@@ -1,7 +1,8 @@
+import os
 import time
 import uuid
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 from PIL import Image
@@ -11,13 +12,18 @@ from schemas import SegmentedFood
 import io
 import torch
 
-MODEL_PATH  = Path(__file__).parent.parent / "models" / "production" / "yolov11l_seg_v2_final.onnx"
+MODEL_DIR   = Path(__file__).parent.parent / "models" / "production"
+MODEL_PATH  = MODEL_DIR / "yolov11l_seg_v2_final.onnx"
 CONF_THRESH = 0.25
 IOU_THRESH  = 0.45
 IMG_SIZE    = 640
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"[inference] Running on device: {DEVICE}")
+
+_S3_BUCKET    = os.getenv("S3_FEEDBACK_BUCKET", "")
+_S3_MODEL_KEY = os.getenv("S3_MODEL_KEY", "models/production/yolov11l_seg_v2_final.onnx")
+_AWS_REGION   = os.getenv("AWS_REGION", "ap-southeast-3")
 
 # Default gram / portion detected
 DEFAULT_GRAMS = {
@@ -27,7 +33,6 @@ DEFAULT_GRAMS = {
     "tofu": 100.0,  "vegetable": 150.0,
 }
 
-# Default serving style
 DEFAULT_SERVING_STYLE = {
     "beef": "fried", "chicken": "fried", "egg": "fried", "fish": "fried",
     "pork": "fried", "shrimp": "fried", "squid": "fried",
@@ -35,10 +40,37 @@ DEFAULT_SERVING_STYLE = {
     "vegetable": "steamed", "fruit": "raw", "sambal": "raw",
 }
 
-print(f"[inference] Loading model {MODEL_PATH} ...")
-_model      = YOLO(str(MODEL_PATH))
-CLASS_NAMES = list(_model.names.values())
-print(f"[inference] Ready — {len(CLASS_NAMES)} classes")
+_model: Optional[YOLO] = None
+CLASS_NAMES: List[str] = []
+
+
+def download_model() -> None:
+    """Download best.onnx dari S3 ke MODEL_PATH. Raise kalau gagal."""
+    import boto3
+    MODEL_DIR.mkdir(parents=True, exist_ok=True)
+    tmp_path = MODEL_PATH.with_suffix(".onnx.tmp")
+    print(f"[inference] Downloading model from s3://{_S3_BUCKET}/{_S3_MODEL_KEY} ...")
+    client = boto3.client("s3", region_name=_AWS_REGION)
+    client.download_file(_S3_BUCKET, _S3_MODEL_KEY, str(tmp_path))
+    tmp_path.replace(MODEL_PATH)  # atomic swap, hindari file setengah-jadi kalau proses lain baca bersamaan
+    print(f"[inference] Model downloaded to {MODEL_PATH}")
+
+
+def load_model() -> None:
+    """(Re)load model ONNX dari MODEL_PATH ke memori."""
+    global _model, CLASS_NAMES
+    print(f"[inference] Loading model {MODEL_PATH} ...")
+    new_model = YOLO(str(MODEL_PATH))
+    _model = new_model  # reassignment, bukan mutate — request yang lagi jalan tetap pakai objek lama sampai selesai
+    CLASS_NAMES = list(_model.names.values())
+    print(f"[inference] Ready — {len(CLASS_NAMES)} classes")
+
+
+def reload_model() -> int:
+    """Download model terbaru dari S3 lalu hot-swap. Dipanggil saat startup dan oleh /admin/reload-model."""
+    download_model()
+    load_model()
+    return len(CLASS_NAMES)
 
 
 def predict(image: Image.Image) -> Tuple[List[SegmentedFood], float]:

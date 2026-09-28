@@ -10,7 +10,7 @@ from typing import Dict, List, Optional
 import redis
 import requests
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from PIL import Image
@@ -34,13 +34,15 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Cek flag dari .env, default False di dev
+    print("[startup] Downloading and loading model from S3...")
+    inference.reload_model()
+
     if os.getenv("ENABLE_WARMUP", "false").lower() == "true":
         print("[startup] Memulai warm up cache Gemini...")
         await warm_up_cache_async()
     else:
         print("[startup] Cache warmup dilewati (Development Mode)")
-    
+
     yield
     
     
@@ -80,6 +82,18 @@ redis_client = redis.Redis(
     db=0,
     decode_responses=True,
 )
+
+ADMIN_RELOAD_TOKEN = os.getenv("ADMIN_RELOAD_TOKEN", "")
+
+@app.post("/admin/reload-model")
+async def reload_model_endpoint(x_admin_token: str = Header(default="")):
+    if not ADMIN_RELOAD_TOKEN or x_admin_token != ADMIN_RELOAD_TOKEN:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    try:
+        n_classes = await asyncio.to_thread(inference.reload_model)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Reload failed: {e}")
+    return {"status": "reloaded", "classes": n_classes}
 
 def _save_session(image_id: str, data: dict, ttl_seconds: int = 3600):
     redis_client.setex(f"session:{image_id}", ttl_seconds, json.dumps(data))

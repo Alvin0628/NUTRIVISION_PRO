@@ -18,7 +18,6 @@ services:
       - ../apps/api/.env
     environment:
       - REDIS_HOST=redis
-      - APP_ENV=development
     depends_on:
       - redis
     restart: unless-stopped
